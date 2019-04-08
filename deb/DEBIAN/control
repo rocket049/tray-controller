@@ -1,0 +1,10 @@
+Package: traycontroller
+Version: 1.0.0
+Architecture: amd64
+Section: universe/utils
+Priority:optional
+Depends: libatk1.0-0, libatk-bridge2.0-0, libatspi2.0-0, libblkid1, libbsd0, libc6, libcairo2, libcairo-gobject2, libdatrie1, libdbus-1-3, libepoxy0, libexpat1, libffi6, libfontconfig1, libfreetype6, libgcrypt20, libgdk-pixbuf2.0-0, libglib2.0-0, libgpg-error0, libgraphite2-3, libgtk-3-0, libharfbuzz0b, liblz4-1, liblzma5, libmount1, libpango-1.0-0, libpangocairo-1.0-0, libpangoft2-1.0-0, libpcre3, libpixman-1-0, libpng16-16, libselinux1, libsystemd0, libthai0, libuuid1, libwayland-client0, libwayland-cursor0, libwayland-egl1, libx11-6, libxau6, libxcb1, libxcb-render0, libxcb-shm0, libxcomposite1, libxcursor1, libxdamage1, libxdmcp6, libxext6, libxfixes3, libxi6, libxinerama1, libxkbcommon0, libxrandr2, libxrender1, zlib1g
+Maintainer: fu huizhong<fuhuizn@163.com>
+Homepage: https://github.com/rocket049/tray-controller
+Description: use status icon to controll programs like pydoc3 godoc. 本程序用于控制其他小程序，例如 pydoc3、godoc，我们直接使用他们的时候需要输入命令，比较低效。 使用本程序作为控制器，可以点击系统托盘控制后台小程序的运行状态。
+
