@@ -168,7 +168,10 @@ func (s *myApp) setTray() {
 
 func (s *myApp) changeStatus() {
 	if s.status {
-		s.srv.Process.Signal(os.Interrupt)
+		err := s.srv.Process.Kill()
+		if err != nil {
+			return
+		}
 		s.status = false
 	} else {
 		go s.runCmd()
