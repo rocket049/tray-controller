@@ -4,7 +4,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -17,8 +16,11 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
+var application *gtk.Application
+var myapp *myApp
+
 type myApp struct {
-	window     *gtk.Window
+	window     *gtk.ApplicationWindow
 	grid       *gtk.Grid
 	scrollWin  *gtk.ScrolledWindow
 	board      *gtk.Label
@@ -64,7 +66,7 @@ func (s *myApp) Create() {
 		args = append(args, v)
 	}
 	s.myCmd.Args = args
-	fmt.Println(s.myCmd.Args)
+	//fmt.Println(s.myCmd.Args)
 
 	sp = strings.Split(cfg.Envs, ";")
 	envs := []string{}
@@ -85,13 +87,11 @@ func (s *myApp) Create() {
 	s.iconRun = path.Join(home1, "config", name1, "run.png")
 	s.iconStop = path.Join(home1, "config", name1, "stop.png")
 
-	//var appID = fmt.Sprintf("icon.p%v", s.getId(exe1))
-	fmt.Println(exe1)
-
-	s.window, err = gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
+	s.window, err = gtk.ApplicationWindowNew(application)
 	if err != nil {
 		panic(err)
 	}
+
 	s.window.SetSizeRequest(400, 300)
 	s.window.SetTitle("Controller-" + s.myCmd.Name)
 	s.grid, err = gtk.GridNew()
@@ -190,7 +190,7 @@ func (s *myApp) createMenu() *gtk.Menu {
 		if s.status {
 			s.srv.Process.Signal(os.Interrupt)
 		}
-		gtk.MainQuit()
+		application.Quit()
 	})
 	menu.Append(item)
 	s.itemStatus, err = gtk.MenuItemNewWithLabel("Run")
@@ -230,29 +230,29 @@ func (s *myApp) runCmd() {
 	w, _ := s.srv.StdinPipe()
 	defer w.Close()
 	s.pipeStdin = w
-	fmt.Println("run")
+	//fmt.Println("run")
 	err := s.srv.Run()
 	if err != nil {
 		log.Println(err)
 	}
 	s.chStaus <- 3
-	fmt.Println("stop")
+	//fmt.Println("stop")
 }
 
 func (s *myApp) waitClose() {
 	for {
 		ret, ok := <-s.chStaus
 		if !ok {
-			gtk.MainQuit()
+			application.Quit()
 		}
 		if ret == 1 {
 			glib.IdleAdd(s.updateRun)
-			fmt.Println("update run")
+			//fmt.Println("update run")
 		} else if ret == 3 {
 			glib.IdleAdd(s.updateStop)
-			fmt.Println("update stop")
+			//fmt.Println("update stop")
 		} else if ret == 2 {
-			gtk.MainQuit()
+			application.Quit()
 		}
 	}
 }
@@ -322,8 +322,22 @@ func (s *myApp) showHelp(name string) {
 }
 
 func main() {
-	gtk.Init(&os.Args)
-	app := new(myApp)
-	app.Create()
-	gtk.Main()
+	exe1, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	application, err = gtk.ApplicationNew("tray.ctrl.p-"+filepath.Base(exe1), glib.APPLICATION_FLAGS_NONE)
+	if err != nil {
+		panic(err)
+	}
+	application.Connect("activate", func() {
+		if myapp != nil {
+			return
+		}
+		myapp = new(myApp)
+		myapp.Create()
+	})
+
+	//gtk.Main()
+	application.Run(os.Args)
 }
