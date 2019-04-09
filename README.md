@@ -17,14 +17,14 @@
 	
 	// godoc 示例：
 	{
-		"Exec":"/usr/local/go/bin/godoc",
-		"Args":"-http :6060"
+		"exec":"/usr/local/go/bin/godoc",
+		"args":"-http :6060"
 	}
 	
 	// pydoc3 示例：
 	{
-		"Exec":"/usr/bin/pydoc3",
-		"Args":"-b"
+		"exec":"/usr/bin/pydoc3",
+		"args":"-b"
 	}
 ```
 
