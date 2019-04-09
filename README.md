@@ -14,6 +14,18 @@
 		"envs":"Key1=Value1;Key2=Value2;...",
 		"wd":"/path/to/work/dir"
 	}
+	
+	// godoc 示例：
+	{
+		"Exec":"/usr/local/go/bin/godoc",
+		"Args":"-http :6060"
+	}
+	
+	// pydoc3 示例：
+	{
+		"Exec":"/usr/bin/pydoc3",
+		"Args":"-b"
+	}
 ```
 
 其中的"args"、"envs"、"wd"可以省略。
