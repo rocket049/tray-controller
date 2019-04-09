@@ -11,6 +11,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
@@ -333,12 +334,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	var once sync.Once
 	application.Connect("activate", func() {
-		if myapp != nil {
-			return
-		}
-		myapp = new(myApp)
-		myapp.Create()
+		//log.Println("application activate")
+		once.Do(func() {
+			myapp = new(myApp)
+			myapp.Create()
+		})
 	})
 
 	//gtk.Main()
