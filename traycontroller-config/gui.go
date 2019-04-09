@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/rocket049/gettext-go/gettext"
 
@@ -78,6 +79,15 @@ func getIconDir() string {
 	}
 	dir1 := filepath.Dir(exe)
 	return filepath.Join(dir1, "..", "share", "traycontroller", "icons")
+}
+
+func getLocaleDir() string {
+	exe, err := os.Executable()
+	if err != nil {
+		return ""
+	}
+	dir1 := filepath.Dir(exe)
+	return filepath.Join(dir1, "..", "share", "traycontroller", "locale")
 }
 
 func errPanic(err error) {
@@ -262,9 +272,19 @@ Comment=Tray Controller`
 	return ioutil.WriteFile(path1, []byte(tmpl), 0755)
 }
 
+func zeroPanic(s string) {
+	name1 := strings.Trim(s, " /")
+	if len(name1) == 0 {
+		panic("get zero value.")
+	}
+}
+
 func (s *myApp) makeConfig() {
 	name1, err := s.cfgName.GetText()
 	errPanic(err)
+	name1 = strings.Trim(name1, " ")
+	zeroPanic(name1)
+
 	//copy program
 	binPath, err := getBinPath(name1)
 	errPanic(err)
@@ -277,21 +297,26 @@ func (s *myApp) makeConfig() {
 	runIconPath := filepath.Join(cfgDir, "run.png")
 	src, err := s.cfgRunIcon.GetText()
 	errPanic(err)
+	zeroPanic(src)
 	copyFile(src, runIconPath, 0644)
 
 	stopIconPath := filepath.Join(cfgDir, "stop.png")
 	src, err = s.cfgStopIcon.GetText()
 	errPanic(err)
+	zeroPanic(src)
 	copyFile(src, stopIconPath, 0644)
 
 	//create config files
 	exec, err := s.cfgExec.GetText()
 	errPanic(err)
+	zeroPanic(exec)
+
 	args, err := s.cfgArgs.GetText()
 	errPanic(err)
 	envs, err := s.cfgEnvs.GetText()
 	errPanic(err)
 	wd, err := s.cfgWd.GetText()
+
 	cfg := &myCfg{Exec: exec, Args: args, Envs: envs, Wd: wd}
 	buf, err := json.Marshal(cfg)
 	errPanic(err)
@@ -306,7 +331,10 @@ func (s *myApp) makeConfig() {
 
 func main() {
 	gtk.Init(&os.Args)
+	gettext.BindTextdomain("config", getLocaleDir(), nil)
+	gettext.Textdomain("config")
 	app = new(myApp)
 	app.Create()
 	gtk.Main()
+	//gettext.SaveLog()
 }
