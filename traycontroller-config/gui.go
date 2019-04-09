@@ -257,7 +257,7 @@ Terminal=false
 Exec=` + binPath + `
 Name=` + name1 + `
 Icon=` + iconPath + `
-Categories=GTK;
+Categories=GTK;Utility;
 Comment=Tray Controller`
 	return ioutil.WriteFile(path1, []byte(tmpl), 0755)
 }
