@@ -358,6 +358,7 @@ func (s *myApp) makeConfig() {
 
 func main() {
 	gtk.Init(&os.Args)
+	gettext.SetLocale("")
 	gettext.BindTextdomain("config", getLocaleDir(), nil)
 	gettext.Textdomain("config")
 	app = new(myApp)
