@@ -34,6 +34,7 @@ type myApp struct {
 }
 
 var app *myApp
+var osID int
 
 func getCfgDir(name string) (string, error) {
 	home, err := os.UserHomeDir()
@@ -54,13 +55,24 @@ func getBinPath(name string) (string, error) {
 	if len(name) == 0 {
 		return "", errors.New("Must give me a name.")
 	}
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
+	switch osID {
+	case 0:
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		dir1 := filepath.Join(home, "bin")
+		os.MkdirAll(dir1, os.ModePerm)
+		return filepath.Join(dir1, name), nil
+	case 1:
+		exe, err := os.Executable()
+		if err != nil {
+			return "", err
+		}
+		dir1 := filepath.Dir(exe)
+		return filepath.Join(dir1, name), nil
 	}
-	dir1 := filepath.Join(home, "bin")
-	os.MkdirAll(dir1, os.ModePerm)
-	return filepath.Join(dir1, name), nil
+	return "", nil
 }
 
 func getControllerPath() (string, error) {
@@ -69,7 +81,14 @@ func getControllerPath() (string, error) {
 		return "", err
 	}
 	dir1 := filepath.Dir(exe)
-	return filepath.Join(dir1, "traycontroller"), nil
+	var res string
+	switch osID {
+	case 0:
+		res = filepath.Join(dir1, "traycontroller")
+	case 1:
+		res = filepath.Join(dir1, "controller.exe")
+	}
+	return res, nil
 }
 
 func getIconDir() string {
@@ -115,7 +134,12 @@ func (s *myApp) Create() {
 	s.cfgName.SetHExpand(true)
 	errPanic(err)
 	grid.Attach(s.cfgName, 1, 1, 1, 1)
-	s.cfgName.SetTooltipText(gettext.T("I will copy the program to HOME/bin/ControllerName"))
+	switch osID {
+	case 0:
+		s.cfgName.SetTooltipText(gettext.T("I will copy the program to HOME/bin/ControllerName"))
+	case 1:
+		s.cfgName.SetTooltipText(gettext.T("I will copy the program to 'ControllerName'"))
+	}
 
 	label, err = gtk.LabelNew(gettext.T("Exec:"))
 	errPanic(err)
