@@ -45,7 +45,10 @@ func getCfgDir(name string) (string, error) {
 	if len(name) > 0 {
 		dir1 = filepath.Join(home, "config", name)
 	} else {
-		dir1 = filepath.Join(home, "config")
+		return "", err
+	}
+	if osID == 1 {
+		dir1 = dir1 + ".exe"
 	}
 	os.MkdirAll(dir1, os.ModePerm)
 	return dir1, nil
@@ -70,7 +73,7 @@ func getBinPath(name string) (string, error) {
 			return "", err
 		}
 		dir1 := filepath.Dir(exe)
-		return filepath.Join(dir1, name), nil
+		return filepath.Join(dir1, name+".exe"), nil
 	}
 	return "", nil
 }
