@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,6 +13,7 @@ import (
 	"github.com/rocket049/gettext-go/gettext"
 
 	"github.com/gotk3/gotk3/gtk"
+	go_locale "github.com/jmshal/go-locale"
 )
 
 type myCfg struct {
@@ -358,7 +360,12 @@ func (s *myApp) makeConfig() {
 
 func main() {
 	gtk.Init(&os.Args)
-	gettext.SetLocale("")
+	loc, err := go_locale.DetectLocale()
+	if err != nil {
+		loc = ""
+		log.Println(loc)
+	}
+	gettext.SetLocale(loc)
 	gettext.BindTextdomain("config", getLocaleDir(), nil)
 	gettext.Textdomain("config")
 	app = new(myApp)
