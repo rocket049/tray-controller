@@ -3,7 +3,6 @@
 package main
 
 import (
-	"bufio"
 	"io"
 	"log"
 	"os"
@@ -113,6 +112,7 @@ func (s *myApp) Create() {
 		log.Fatal(err)
 	}
 	s.board.SetLineWrap(true)
+	s.board.SetSelectable(true)
 	s.grid.SetMarginStart(10)
 	s.grid.SetMarginEnd(10)
 	s.scrollWin.Add(s.board)
@@ -279,16 +279,16 @@ func (s *myApp) updateStop() {
 
 func (s *myApp) showOutput(r io.ReadCloser) {
 	defer r.Close()
-	rd := bufio.NewReader(r)
 	for {
-		line, _, err := rd.ReadLine()
+		var buf [480]byte
+		n, err := r.Read(buf[:])
 		if err != nil {
 			log.Println(err)
 			break
 		}
 		glib.IdleAdd(func() bool {
 			txt1, _ := s.board.GetText()
-			s.board.SetText(txt1 + string(line) + "\n")
+			s.board.SetText(txt1 + string(buf[:n]))
 
 			glib.IdleAdd(func() bool {
 				vadj := s.scrollWin.GetVAdjustment()
