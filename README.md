@@ -40,7 +40,7 @@
 ## linux上的图形配置工具
 `linux`版中增加了一个配置工具`traycontroller-config`，在命令中运行 `traycontroller-config`，可以用图形界面生成配置文件和菜单项。
 
-`windows 版的 `traycontroller-config ，在解压后的目录中： `bin/traycontroller-config.exe`，不能生成菜单项目，配置后在 bin 目录中寻找新建的 `ControllerName.exe` 运行。
+`windows 版的 `traycontroller-config ，在解压后的目录中： `bin/traycontroller-config.exe`，不能生成菜单项目，配置后在 bin 目录中寻找新建的 `launcher/ControllerName.vbs` 运行。
 
 ## 界面
 主窗口显示程序的输出，包含标准输出和错误输出，下方的输入框可以用来向被控制的程序输入信息。
